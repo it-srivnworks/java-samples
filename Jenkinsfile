@@ -35,5 +35,25 @@ pipeline {
 			}
 		}
         
+        stage('Build Docker Image') {
+			steps {
+				script {
+					dockerImage = docker.build("devops01srivnworks/java-samples:${env.BUILD_TAG}")
+				}
+
+			}
+		}
+
+        stage('Push Docker Image') {
+			steps {
+				script {
+					docker.withRegistry('', 'devops01docker') {
+						dockerImage.push();
+						dockerImage.push('latest');
+					}
+				}
+			}
+		}
+
     }
 }
